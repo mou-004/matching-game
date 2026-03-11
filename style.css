@@ -69,6 +69,13 @@ cursor:pointer;
   touch-action: manipulation;
   -webkit-user-select: none;
   user-select: none;
+  outline: 2px solid rgba(0,255,0,0.45);
+  box-sizing: border-box;
+}
+
+/* optional: remove visual debug outline after verification */
+.card.debug-off {
+  outline: none;
 }
 
 .card-inner{
