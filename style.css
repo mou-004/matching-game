@@ -66,6 +66,9 @@ max-width:70px;
 margin:auto;
 perspective:1000px;
 cursor:pointer;
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .card-inner{
