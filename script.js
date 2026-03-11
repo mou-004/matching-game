@@ -54,25 +54,27 @@ startTimer();
 
 function flipCard(){
 
-if(paused) return;
-if(lockBoard) return;
-if(this === firstCard) return;
+  if(paused) return;
+  if(lockBoard) return;
+  if(popup.classList.contains("show")) return;
+  if(this.classList.contains("match")) return;
+  if(this === firstCard) return;
 
-this.classList.add("flip");
+  this.classList.add("flip");
 
-if(!firstCard){
-firstCard = this;
-return;
-}
+  if(!firstCard){
+    firstCard = this;
+    return;
+  }
 
-secondCard = this;
+  secondCard = this;
 
-lockBoard = true;
+  lockBoard = true;
 
-moves++;
-movesText.textContent = moves;
+  moves++;
+  movesText.textContent = moves;
 
-checkMatch();
+  checkMatch();
 }
 
 function checkMatch(){
