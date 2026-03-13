@@ -31,7 +31,7 @@
             board.innerHTML = "";
             moves = 0;
             matches = 0;
-            time = 60;
+            time = 80;
             paused = false;
             gameStarted = true;
             firstCard = null;
