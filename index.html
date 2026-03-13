@@ -1,34 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Memory Matching Game</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Card Game</title>
+    <link href="https://cdn.jsdelivr.net/npm/fontsource-roboto@4.0.0/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+  
 </head>
-
 <body>
+    <div class="header">
+        <div class="stat">
+            <div class="stat-label">Moves</div>
+            <div class="stat-value" id="moves">0</div>
+        </div>
+        <div class="stat">
+            <div class="stat-label">Time</div>
+            <div class="stat-value" id="timer">60</div>
+        </div>
+        <div class="stat">
+            <div class="stat-label">Matches</div>
+            <div class="stat-value" id="matches">0/12</div>
+        </div>
+    </div>
 
-<h1>Memory Matching Game</h1>
+    <div id="board"></div>
 
-<div class="info">
-    <div>Moves: <span id="moves">0</span></div>
-    <div>Time: <span id="timer">60</span>s</div>
-</div>
+    <div class="controls">
+        <button id="pauseBtn">Pause</button>
+        <button id="restartBtn">Restart</button>
+    </div>
 
-<div class="controls">
-    <button id="pauseBtn">Pause</button>
-    <button onclick="restartGame()">Restart</button>
-</div>
+    <div class="popup" id="popup">
+        <div class="popup-content">
+            <div id="message"></div>
+            <div class="popup-stats">
+                <div class="popup-stat">
+                    <div class="popup-stat-label">Moves</div>
+                    <div class="popup-stat-value" id="popupMoves">0</div>
+                </div>
+                <div class="popup-stat">
+                    <div class="popup-stat-label">Time Left</div>
+                    <div class="popup-stat-value" id="popupTime">0</div>
+                </div>
+            </div>
+            <button id="closePopup">Play Again</button>
+        </div>
+    </div>
 
-<div class="board" id="board"></div>
 
-<div class="popup" id="popup">
-    <h2 id="message"></h2>
-    <button onclick="restartGame()">Play Again</button>
-</div>
-
-<script src="script.js"></script>
-
+      <script src="script.js"></script>
 </body>
 </html>
+
