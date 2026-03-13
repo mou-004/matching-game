@@ -1,157 +1,166 @@
-const board = document.getElementById("board");
-const movesText = document.getElementById("moves");
-const timerText = document.getElementById("timer");
-const popup = document.getElementById("popup");
-const message = document.getElementById("message");
-const pauseBtn = document.getElementById("pauseBtn");
 
-const emojis = [
-"🍎","🍌","🍇","🍉","🍒","🥝",
-"🍍","🍑","🍋","🍓","🥥","🍈"
-];
+        const board = document.getElementById("board");
+        const movesText = document.getElementById("moves");
+        const timerText = document.getElementById("timer");
+        const matchesText = document.getElementById("matches");
+        const popup = document.getElementById("popup");
+        const message = document.getElementById("message");
+        const pauseBtn = document.getElementById("pauseBtn");
+        const restartBtn = document.getElementById("restartBtn");
+        const closePopup = document.getElementById("closePopup");
+        const popupMoves = document.getElementById("popupMoves");
+        const popupTime = document.getElementById("popupTime");
 
-let cards = [...emojis, ...emojis];
+        const emojis = [
+            "🍎","🍌","🍇","🍉","🍒","🥝",
+            "🍍","🍑","🍋","🍓","🥥","🍈"
+        ];
 
-let firstCard = null;
-let secondCard = null;
-let lockBoard = false;
+        let cards = [...emojis, ...emojis];
+        let firstCard = null;
+        let secondCard = null;
+        let lockBoard = false;
+        let moves = 0;
+        let matches = 0;
+        let time = 60;
+        let timer = null;
+        let paused = false;
+        let gameStarted = false;
 
-let moves = 0;
-let matches = 0;
+        function startGame() {
+            board.innerHTML = "";
+            moves = 0;
+            matches = 0;
+            time = 60;
+            paused = false;
+            gameStarted = true;
+            firstCard = null;
+            secondCard = null;
+            lockBoard = false;
 
-let time = 60;
-let timer;
-let paused = false;
+            movesText.textContent = moves;
+            timerText.textContent = time;
+            matchesText.textContent = `0/${emojis.length}`;
+            pauseBtn.textContent = "Pause";
 
-function startGame(){
+            let shuffled = [...cards];
+            shuffle(shuffled);
 
-board.innerHTML = "";
+            shuffled.forEach(emoji => {
+                const card = document.createElement("div");
+                card.className = "card";
+                card.dataset.value = emoji;
 
-cards.sort(()=>0.5 - Math.random());
+                card.innerHTML = `
+                    <div class="card-inner">
+                        <div class="front"></div>
+                        <div class="back">${emoji}</div>
+                    </div>
+                `;
 
-cards.forEach(emoji => {
+                card.addEventListener("click", function() {
+                    flipCard.call(this);
+                });
 
-const card = document.createElement("div");
-card.classList.add("card");
+                board.appendChild(card);
+            });
 
-card.innerHTML = `
-<div class="card-inner">
-<div class="front"></div>
-<div class="back">${emoji}</div>
-</div>
-`;
+            startTimer();
+        }
 
-card.dataset.value = emoji;
+        function flipCard() {
+            if (paused || lockBoard || !gameStarted) return;
+            if (this.classList.contains("flip")) return;
 
-card.addEventListener("click", flipCard);
+            this.classList.add("flip");
 
-board.appendChild(card);
+            if (!firstCard) {
+                firstCard = this;
+                return;
+            }
 
-});
+            secondCard = this;
+            lockBoard = true;
+            moves++;
+            movesText.textContent = moves;
 
-startTimer();
-}
+            if (firstCard.dataset.value === secondCard.dataset.value) {
+                firstCard.classList.add("match");
+                secondCard.classList.add("match");
+                matches++;
+                matchesText.textContent = `${matches}/${emojis.length}`;
 
-function flipCard(){
+                if (matches === emojis.length) {
+                    clearInterval(timer);
+                    gameStarted = false;
+                    showPopup("🎉 You Win!", "win");
+                } else {
+                    resetBoard();
+                }
+            } else {
+                setTimeout(() => {
+                    firstCard.classList.remove("flip");
+                    secondCard.classList.remove("flip");
+                    resetBoard();
+                }, 700);
+            }
+        }
 
-  if(paused) return;
-  if(lockBoard) return;
-  if(popup.classList.contains("show")) return;
-  if(this.classList.contains("match")) return;
-  if(this === firstCard) return;
+        function resetBoard() {
+            firstCard = null;
+            secondCard = null;
+            lockBoard = false;
+        }
 
-  this.classList.add("flip");
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
 
-  if(!firstCard){
-    firstCard = this;
-    return;
-  }
+        function startTimer() {
+            clearInterval(timer);
+            timer = setInterval(() => {
+                if (!paused && gameStarted) {
+                    time--;
+                    timerText.textContent = time;
 
-  secondCard = this;
+                    if (time <= 0) {
+                        clearInterval(timer);
+                        gameStarted = false;
+                        showPopup("⏰ Time Up! You Lost!", "lose");
+                        lockBoard = true;
+                    }
+                }
+            }, 1000);
+        }
 
-  lockBoard = true;
+        function showPopup(msg, className) {
+            message.textContent = msg;
+            message.className = className;
+            popupMoves.textContent = moves;
+            popupTime.textContent = time;
+            popup.classList.add("show");
+        }
 
-  moves++;
-  movesText.textContent = moves;
+        function hidePopup() {
+            popup.classList.remove("show");
+            startGame();
+        }
 
-  checkMatch();
-}
+        pauseBtn.addEventListener("click", () => {
+            if (!gameStarted) return;
+            paused = !paused;
+            pauseBtn.textContent = paused ? "Resume" : "Pause";
+        });
 
-function checkMatch(){
+        restartBtn.addEventListener("click", () => {
+            startGame();
+        });
 
-if(firstCard.dataset.value === secondCard.dataset.value){
+        closePopup.addEventListener("click", () => {
+            hidePopup();
+        });
 
-firstCard.classList.add("match");
-secondCard.classList.add("match");
-
-matches++;
-
-resetTurn();
-
-if(matches === 12){
-clearInterval(timer);
-message.textContent = "🎉 You Win!";
-message.className = "win";
-popup.classList.add("show");
-}
-
-}else{
-
-setTimeout(()=>{
-
-firstCard.classList.remove("flip");
-secondCard.classList.remove("flip");
-
-resetTurn();
-
-},800)
-
-}
-
-}
-
-function resetTurn(){
-firstCard = null;
-secondCard = null;
-lockBoard = false;
-}
-
-function startTimer(){
-
-timer = setInterval(()=>{
-
-if(!paused){
-time--;
-timerText.textContent = time;
-}
-
-if(time === 0){
-
-clearInterval(timer);
-
-message.textContent = "⏰ Time Up! You Lost!";
-message.className = "lose";
-
-popup.classList.add("show");
-
-lockBoard = true;
-
-}
-
-},1000)
-
-}
-
-pauseBtn.addEventListener("click",()=>{
-
-paused = !paused;
-
-pauseBtn.textContent = paused ? "Resume" : "Pause";
-
-});
-
-function restartGame(){
-location.reload();
-}
-
-startGame();
+        startGame();
