@@ -1,193 +1,283 @@
-body{
-font-family: Arial, sans-serif;
-background: linear-gradient(135deg,#141e30,#243b55);
-color:white;
-text-align:center;
+*{
 margin:0;
-padding:20px;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:'Roboto',sans-serif;
+background:linear-gradient(135deg,#0a1628 0%,#1a3a5c 50%,#0d2137 100%);
 min-height:100vh;
-}
-
-h1{
-margin-bottom:10px;
-}
-
-/* info section */
-
-.info{
 display:flex;
-justify-content:center;
-gap:30px;
-margin-bottom:10px;
-font-size:18px;
+flex-direction:column;
+align-items:center;
+padding:20px;
+overflow-x:hidden;
 }
 
-/* buttons */
+/* HEADER */
 
-.controls{
+.header{
+background:rgba(255,255,255,0.95);
+padding:20px 40px;
+border-radius:15px;
 margin-bottom:20px;
+box-shadow:0 10px 30px rgba(0,0,0,0.3);
 display:flex;
-justify-content:center;
-gap:15px;
+gap:30px;
+align-items:center;
 flex-wrap:wrap;
+justify-content:center;
 }
 
-button{
-padding:10px 18px;
-border:none;
-border-radius:6px;
-background:#2a5298;
-color:white;
-font-size:16px;
-cursor:pointer;
+.stat{
+text-align:center;
 }
 
-button:hover{
-background:#1e3c72;
+.stat-label{
+font-size:14px;
+color:#666;
+text-transform:uppercase;
+letter-spacing:1px;
 }
 
-/* game board */
+.stat-value{
+font-size:28px;
+font-weight:bold;
+color:#333;
+}
 
-.board{
-max-width:600px;
-margin:20px auto;
+/* BOARD */
+
+#board{
 display:grid;
 grid-template-columns:repeat(6,1fr);
-gap:8px;
-padding:10px;
+gap:15px;
+width:100%;
+max-width:720px;
+padding:20px;
+justify-content:center;
 }
 
-/* card */
+/* CARD */
 
 .card{
 width:100%;
 aspect-ratio:1/1;
-max-width:70px;
-margin:auto;
+max-width:90px;
 perspective:1000px;
 cursor:pointer;
-  touch-action: manipulation;
-  -webkit-user-select: none;
-  user-select: none;
-  outline: 2px solid rgba(0,255,0,0.45);
-  box-sizing: border-box;
-}
-
-/* optional: remove visual debug outline after verification */
-.card.debug-off {
-  outline: none;
+margin:auto;
 }
 
 .card-inner{
 position:relative;
 width:100%;
 height:100%;
+transition:transform 0.6s;
 transform-style:preserve-3d;
-transition:transform .5s ease;
 }
 
 .card.flip .card-inner{
 transform:rotateY(180deg);
 }
 
-/* card faces */
+.card.match .card-inner{
+transform:rotateY(180deg);
+animation:pulse .5s ease-in-out;
+}
 
-.front,
-.back{
+@keyframes pulse{
+0%,100%{transform:rotateY(180deg) scale(1);}
+50%{transform:rotateY(180deg) scale(1.1);}
+}
+
+.front,.back{
 position:absolute;
 width:100%;
 height:100%;
+backface-visibility:hidden;
+border-radius:10px;
 display:flex;
 align-items:center;
 justify-content:center;
-border-radius:8px;
-backface-visibility:hidden;
+font-size:40px;
+box-shadow:0 5px 15px rgba(0,0,0,0.3);
 }
 
 .front{
-background:rgba(255,255,255,0.1);
-border:1px solid rgba(255,255,255,0.2);
+background:linear-gradient(135deg,#1e5799 0%,#2989d8 100%);
+color:white;
+font-size:30px;
+border:2px solid #4a90d9;
+}
+
+.front::after{
+content:"?";
 }
 
 .back{
-background:white;
-color:black;
+background:linear-gradient(135deg,#f093fb 0%,#f5576c 100%);
 transform:rotateY(180deg);
-font-size:22px;
+border:3px solid #fff;
 }
 
-/* matched animation */
+/* CONTROLS */
 
-.match{
-animation:shake .4s;
-box-shadow:0 0 12px #00ff99;
+.controls{
+margin-top:20px;
+display:flex;
+gap:15px;
+flex-wrap:wrap;
+justify-content:center;
 }
 
-@keyframes shake{
-0%{transform:rotate(0)}
-25%{transform:rotate(4deg)}
-50%{transform:rotate(-4deg)}
-75%{transform:rotate(3deg)}
-100%{transform:rotate(0)}
+button{
+padding:12px 30px;
+font-size:16px;
+border:none;
+border-radius:25px;
+cursor:pointer;
+transition:all .3s ease;
+font-weight:bold;
+text-transform:uppercase;
+letter-spacing:1px;
 }
 
-/* popup */
+#pauseBtn{
+background:linear-gradient(135deg,#f093fb 0%,#f5576c 100%);
+color:white;
+}
+
+#pauseBtn:hover{
+transform:translateY(-2px);
+box-shadow:0 5px 20px rgba(245,87,108,0.4);
+}
+
+#restartBtn{
+background:linear-gradient(135deg,#4facfe 0%,#00f2fe 100%);
+color:white;
+}
+
+#restartBtn:hover{
+transform:translateY(-2px);
+box-shadow:0 5px 20px rgba(79,172,254,0.4);
+}
+
+/* POPUP */
 
 .popup{
 position:fixed;
-top:50%;
-left:50%;
-transform:translate(-50%,-50%) scale(.8);
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.8);
+display:flex;
+align-items:center;
+justify-content:center;
 opacity:0;
-background:white;
-color:black;
-padding:25px;
-border-radius:12px;
-box-shadow:0 15px 40px rgba(0,0,0,.5);
-transition:all .4s ease;
-width:90%;
-max-width:320px;
-text-align:center;
-z-index:100;
+visibility:hidden;
+transition:all .3s ease;
+z-index:1000;
 }
 
 .popup.show{
-transform:translate(-50%,-50%) scale(1);
 opacity:1;
+visibility:visible;
+}
+
+.popup-content{
+background:white;
+padding:40px 60px;
+border-radius:20px;
+text-align:center;
+transform:scale(.8);
+transition:transform .3s ease;
+max-width:90%;
+}
+
+.popup.show .popup-content{
+transform:scale(1);
 }
 
 #message{
-font-size:clamp(20px,5vw,28px);
-margin-bottom:15px;
+font-size:32px;
+font-weight:bold;
+margin-bottom:20px;
 }
 
-.win{
-color:#2ecc71;
+#message.win{
+color:#4CAF50;
 }
 
-.lose{
-color:#e74c3c;
+#message.lose{
+color:#f44336;
 }
 
-.popup button{
-padding:10px 20px;
-font-size:16px;
+.popup-stats{
+display:flex;
+gap:30px;
+justify-content:center;
+margin-bottom:30px;
+flex-wrap:wrap;
 }
 
-/* mobile */
-
-@media (max-width:500px){
-
-.board{
-grid-template-columns:repeat(4,1fr);
+.popup-stat{
+text-align:center;
 }
 
+.popup-stat-label{
+font-size:14px;
+color:#666;
+}
+
+.popup-stat-value{
+font-size:24px;
+font-weight:bold;
+color:#333;
+}
+
+#closePopup{
+background:linear-gradient(135deg,#1e5799 0%,#2989d8 100%);
+color:white;
+padding:15px 40px;
+}
+
+#closePopup:hover{
+transform:translateY(-2px);
+box-shadow:0 5px 20px rgba(30,87,153,0.4);
+}
+
+/* SCREEN HEIGHT ADJUST */
+
+@media (max-height:800px){
 .card{
-max-width:60px;
+max-width:75px;
+}
 }
 
-.back{
-font-size:18px;
+@media (max-height:700px){
+.card{
+max-width:65px;
+}
+}
+
+/* MOBILE */
+
+@media (max-width:600px){
+
+#board{
+grid-template-columns:repeat(4,1fr);
+max-width:420px;
+}
+
+.front,.back{
+font-size:28px;
+}
+
+.stat-value{
+font-size:22px;
 }
 
 }
