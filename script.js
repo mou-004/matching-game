@@ -22,7 +22,7 @@
         let lockBoard = false;
         let moves = 0;
         let matches = 0;
-        let time = 60;
+        let time = 80;
         let timer = null;
         let paused = false;
         let gameStarted = false;
